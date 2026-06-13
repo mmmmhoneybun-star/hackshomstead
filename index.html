@@ -774,7 +774,7 @@
   // 30-minute send cooldown
   // Key changed from hh_last_submit_time to hh_last_submit_v2 to reset everyone's previous cooldown
   const COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes
-  const COOLDOWN_KEY = 'hh_last_submit_v3';
+  const COOLDOWN_KEY = 'hh_last_submit_v5';
 
   function getRemainingCooldown() {
     const last = parseInt(localStorage.getItem(COOLDOWN_KEY) || '0', 10);
