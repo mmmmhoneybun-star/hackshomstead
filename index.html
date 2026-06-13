@@ -525,6 +525,7 @@
       <input type="email" id="emailField" placeholder="you@gmail.com" autocomplete="off" />
 
       <label class="field-label">Delivery Address</label>
+      <div class="field-error" id="addressError">Please enter your delivery address</div>
       <input type="text" id="addressField" placeholder="123 Main St, City, MI" autocomplete="off" />
 
       <label class="field-label">Extra Notes (optional)</label>
@@ -806,6 +807,9 @@
   document.getElementById('emailField').addEventListener('input', () => {
     document.getElementById('emailError').classList.remove('show');
   });
+  document.getElementById('addressField').addEventListener('input', () => {
+    document.getElementById('addressError').classList.remove('show');
+  });
 
   document.getElementById('sendBtn').addEventListener('click', async () => {
     // Only show the cooldown message when they actually try to send
@@ -845,7 +849,7 @@
       hasError = true;
     }
     if (!address) {
-      alert('Please enter your delivery address.');
+      document.getElementById('addressError').classList.add('show');
       hasError = true;
     }
     if (orderKeys.length === 0) {
@@ -879,6 +883,7 @@
         document.getElementById('messageBox').value = '';
         nameError.classList.remove('show');
         emailError.classList.remove('show');
+        document.getElementById('addressError').classList.remove('show');
         Object.keys(orderMap).forEach(k => delete orderMap[k]);
         document.querySelectorAll('.qty-num').forEach(el => el.textContent = '0');
         document.getElementById('orderSummary').style.display = 'none';
