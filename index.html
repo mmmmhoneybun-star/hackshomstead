@@ -472,6 +472,19 @@
       .cat-tab { font-size: 0.75rem; padding: 6px 10px; }
       .item-name { font-size: 0.85rem; }
     }
+    .unit-toggle {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #b5e7c4;
+      font-size: 0.75rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .unit-toggle:hover { background: #40916c; border-color: #40916c; color: #fff; }
   </style>
 </head>
 <body>
@@ -532,6 +545,7 @@
       <h2>Items</h2>
       <p class="sub">Pick a category then add items to your order.</p>
 
+      <div class="field-error" id="itemError" style="margin-bottom: 10px;">Please add an item to your order</div>
       <div class="cat-tabs">
         <button class="cat-tab active" data-cat="all">All</button>
         <button class="cat-tab" data-cat="veggie">Veggies</button>
@@ -560,7 +574,7 @@
           </div>
         </div>
         <div class="item-row" data-cat="fruit">
-          <span class="item-name">Strawberries <span class="item-unit">/ pint</span></span>
+          <span class="item-name">Strawberries <span class="item-unit">/ <button class="unit-toggle" id="strawberryUnitBtn">pint</button></span></span>
           <div class="qty-ctrl">
             <button class="qty-btn minus">−</button>
             <span class="qty-num">0</span>
@@ -666,6 +680,15 @@
   // Item qty + add
   const orderMap = {};
 
+  // Strawberry unit toggle (pint / quart)
+  const strawberryUnitBtn = document.getElementById('strawberryUnitBtn');
+  const strawberryUnits = ['pint', 'quart'];
+  let strawberryUnitIndex = 0;
+  strawberryUnitBtn.addEventListener('click', () => {
+    strawberryUnitIndex = (strawberryUnitIndex + 1) % strawberryUnits.length;
+    strawberryUnitBtn.textContent = strawberryUnits[strawberryUnitIndex];
+  });
+
   rows.forEach(row => {
     const nameEl = row.querySelector('.item-name');
     const name = nameEl.childNodes[0].textContent.trim();
@@ -687,9 +710,11 @@
         document.getElementById('qtyModalOverlay').classList.add('show');
         return;
       }
-      const unit = unitEl ? unitEl.textContent.trim() : '';
+      const toggleBtn = unitEl ? unitEl.querySelector('.unit-toggle') : null;
+      const unit = toggleBtn ? toggleBtn.textContent.trim() : (unitEl ? unitEl.textContent.replace('/', '').trim() : '');
       const key = name;
       orderMap[key] = { qty: q, unit };
+      document.getElementById('itemError').classList.remove('show');
       addBtn.textContent = '✓ Added';
       addBtn.classList.add('added');
       qtyEl.textContent = '0';
@@ -800,8 +825,10 @@
 
     const nameError = document.getElementById('nameError');
     const emailError = document.getElementById('emailError');
+    const itemError = document.getElementById('itemError');
     nameError.classList.remove('show');
     emailError.classList.remove('show');
+    itemError.classList.remove('show');
 
     const bannedWords = ['fuck', 'fucker', 'nigger', 'nigga', 'bitch', 'shit', 'retard'];
     const lowerName = name.toLowerCase();
@@ -821,8 +848,8 @@
       alert('Please enter your delivery address.');
       hasError = true;
     }
-    if (orderKeys.length === 0 && !message) {
-      alert('Please add at least one item or leave a message.');
+    if (orderKeys.length === 0) {
+      itemError.classList.add('show');
       hasError = true;
     }
 
