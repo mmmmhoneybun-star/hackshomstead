@@ -485,6 +485,35 @@
       transition: background 0.2s, border-color 0.2s;
     }
     .unit-toggle:hover { background: #40916c; border-color: #40916c; color: #fff; }
+    .header-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .fb-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #1877f2, #0d65d9);
+      color: #fff;
+      border: none;
+      padding: clamp(12px, 3vw, 16px) clamp(20px, 5vw, 36px);
+      border-radius: 50px;
+      font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(24,119,242,0.5);
+      white-space: nowrap;
+    }
+
+    .fb-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(24,119,242,0.6); }
+    .fb-btn:active { transform: scale(0.97); }
   </style>
 </head>
 <body>
@@ -500,12 +529,18 @@
         <p class="tagline">Farm Fresh • Family Owned</p>
       </div>
     </div>
+    <div class="header-btns">
+    <a class="fb-btn" href="https://www.facebook.com/profile.php?id=61577313353822" target="_blank" rel="noopener">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.953h-1.514c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+      Facebook
+    </a>
     <div class="call-wrap">
       <button class="call-btn" id="callBtn">
         <span class="pulse-ring"></span>
         📞 Call Us — (616) 863-8257
       </button>
       <div class="toast" id="toast">📋 Number copied — dial from your phone!</div>
+    </div>
     </div>
   </header>
 
