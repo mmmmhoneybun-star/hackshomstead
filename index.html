@@ -756,7 +756,7 @@
       }
       const toggleBtn = unitEl ? unitEl.querySelector('.unit-toggle') : null;
       const unit = toggleBtn ? toggleBtn.textContent.trim() : (unitEl ? unitEl.textContent.replace('/', '').trim() : '');
-      const key = name;
+      const key = unit ? `${name} (${unit})` : name;
       orderMap[key] = { qty: q, unit };
       document.getElementById('itemError').classList.remove('show');
       addBtn.textContent = '✓ Added';
