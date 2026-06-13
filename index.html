@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hacks Homestead</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #3a3a3a 0%, #5a5a5a 40%, #4a4a4a 100%);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    #particles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .site {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: clamp(20px, 5vw, 50px) clamp(14px, 4vw, 24px) clamp(20px, 4vw, 40px);
+    }
+
+    header { text-align: center; margin-bottom: 44px; }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .logo-icon {
+      font-size: 3rem;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 7vw, 2.6rem);
+      color: #fff;
+      text-align: left;
+      line-height: 1.1;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+
+    .tagline {
+      color: #b5e7c4;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .call-wrap { position: relative; display: inline-block; }
+
+    .call-btn {
+      position: relative;
+      background: linear-gradient(135deg, #2d6a4f, #40916c);
+      color: #fff;
+      border: none;
+      padding: clamp(12px, 3vw, 16px) clamp(20px, 5vw, 36px);
+      border-radius: 50px;
+      font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(45,106,79,0.5);
+      white-space: nowrap;
+      max-width: 100%;
+    }
+
+    .call-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(45,106,79,0.6); }
+    .call-btn:active { transform: scale(0.97); }
+
+    .pulse-ring {
+      position: absolute;
+      top: 50%; left: 24px;
+      transform: translate(-50%, -50%);
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      animation: pulse 1.8s ease-out infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%,-50%) scale(3.5); opacity: 0; }
+    }
+
+    .toast {
+      display: none;
+      position: absolute;
+      top: -58px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1b1b1b;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .toast.show { display: block; animation: fadeUp 0.3s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Main two-column layout */
+    .main-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      .main-cols { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: clamp(18px, 4vw, 28px) clamp(14px, 4vw, 24px);
+      min-width: 0;
+    }
+
+    .card h2 {
+      font-family: 'Playfair Display', serif;
+      color: #fff;
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+    }
+
+    .sub {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+
+    /* Category tabs */
+    .cat-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .cat-tab {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-tab.active, .cat-tab:hover {
+      background: #40916c;
+      border-color: #40916c;
+      color: #fff;
+    }
+
+    /* Item list */
+    .item-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+
+    .item-row.hidden { display: none; }
+
+    .item-name { color: #fff; font-size: 0.9rem; font-weight: 500; flex: 1; }
+    .item-unit { color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-left: 6px; }
+
+    .qty-ctrl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .qty-btn {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .qty-btn:hover { background: #40916c; }
+
+    .qty-num {
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .add-btn {
+      background: #40916c;
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 10px;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+
+    .add-btn:hover { background: #2d6a4f; }
+    .add-btn.added { background: #1b4332; }
+
+    /* Form fields */
+    .field-label {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .field-error {
+      display: none;
+      color: #ff5c5c;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: -2px;
+      margin-bottom: 6px;
+    }
+
+    .field-error.show { display: block; }
+
+    #cooldownError {
+      margin-top: 10px;
+      margin-bottom: 0;
+      text-align: center;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal-box {
+      background: #c0392b;
+      color: #fff;
+      padding: 28px 32px;
+      border-radius: 14px;
+      text-align: center;
+      max-width: 340px;
+      width: 90%;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      animation: popIn 0.2s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-box p {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .modal-ok-btn {
+      background: #fff;
+      color: #c0392b;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    input[type="text"], input[type="email"], textarea {
+      width: 100%;
+      max-width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 16px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border 0.2s;
+      margin-bottom: 12px;
+      autocomplete: off;
+    }
+
+    input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.3); }
+
+    textarea {
+      height: 100px;
+      resize: vertical;
+      margin-bottom: 0;
+    }
+
+    .order-summary {
+      background: rgba(45,106,79,0.2);
+      border: 1px solid rgba(96,211,142,0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .order-summary strong {
+      color: #fff;
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+    }
+
+    .order-list {
+      max-height: 160px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-right: 4px;
+    }
+
+    .order-list::-webkit-scrollbar { width: 6px; }
+    .order-list::-webkit-scrollbar-track { background: transparent; }
+    .order-list::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+    }
+
+    .order-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 6px 8px;
+    }
+
+    .order-list-item span {
+      color: #b5e7c4;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .remove-item-btn {
+      background: none;
+      border: none;
+      color: #ff5c5c;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .remove-item-btn:hover {
+      background: rgba(255,92,92,0.15);
+    }
+
+    .send-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      color: #fff;
+      border: none;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(21,101,192,0.4);
+      margin-top: 14px;
+    }
+
+    .send-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(21,101,192,0.5); }
+    .send-btn:active { transform: scale(0.98); }
+    .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .success-msg {
+      display: none;
+      margin-top: 14px;
+      background: rgba(45,106,79,0.3);
+      border: 1px solid rgba(96,211,142,0.4);
+      color: #b5e7c4;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      margin-top: 32px;
+    }
+
+    @media (max-width: 480px) {
+      .logo-icon { font-size: 2.2rem; }
+      .logo-wrap { gap: 10px; }
+      .cat-tab { font-size: 0.75rem; padding: 6px 10px; }
+      .item-name { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="site">
+  <header>
+    <div class="logo-wrap">
+      <div class="logo-icon">🌿</div>
+      <div>
+        <h1>Hacks Homestead</h1>
+        <p class="tagline">Farm Fresh • Family Owned</p>
+      </div>
+    </div>
+    <div class="call-wrap">
+      <button class="call-btn" id="callBtn">
+        <span class="pulse-ring"></span>
+        📞 Call Us — (616) 863-8257
+      </button>
+      <div class="toast" id="toast">📋 Number copied — dial from your phone!</div>
+    </div>
+  </header>
+
+  <div class="main-cols">
+
+    <!-- LEFT: Contact form -->
+    <div class="card">
+      <h2>Send Us a Message</h2>
+      <p class="sub">Fill out your info and we'll get back to you soon.</p>
+
+      <label class="field-label">Your First Name</label>
+      <div class="field-error" id="nameError">Please enter your real name</div>
+      <input type="text" id="nameField" placeholder="Jane" autocomplete="off" />
+
+      <label class="field-label">Your Email</label>
+      <div class="field-error" id="emailError">Please enter a valid @gmail.com email address</div>
+      <input type="email" id="emailField" placeholder="you@gmail.com" autocomplete="off" />
+
+      <label class="field-label">Delivery Address</label>
+      <input type="text" id="addressField" placeholder="123 Main St, City, MI" autocomplete="off" />
+
+      <label class="field-label">Extra Notes (optional)</label>
+      <textarea id="messageBox" placeholder="Any special requests or questions..."></textarea>
+
+      <div class="order-summary" id="orderSummary">
+        <strong>Your order:</strong>
+        <div class="order-list" id="orderList"></div>
+      </div>
+
+      <button class="send-btn" id="sendBtn">Send Order / Message ✉️</button>
+      <div class="field-error" id="cooldownError">You can only send one message every 30 minutes. Please try again later.</div>
+      <div class="success-msg" id="successMsg">✅ Sent! We'll be in touch soon.</div>
+    </div>
+
+    <!-- RIGHT: Items -->
+    <div class="card">
+      <h2>Items</h2>
+      <p class="sub">Pick a category then add items to your order.</p>
+
+      <div class="cat-tabs">
+        <button class="cat-tab active" data-cat="all">All</button>
+        <button class="cat-tab" data-cat="veggie">Veggies</button>
+        <button class="cat-tab" data-cat="fruit">Fruits</button>
+        <button class="cat-tab" data-cat="herb">Herbs</button>
+        <button class="cat-tab" data-cat="plant">Plants</button>
+      </div>
+
+      <div class="item-list">
+        <div class="item-row" data-cat="veggie">
+          <span class="item-name">Asparagus <span class="item-unit">/ bunch</span></span>
+          <div class="qty-ctrl">
+            <button class="qty-btn minus">−</button>
+            <span class="qty-num">0</span>
+            <button class="qty-btn plus">+</button>
+            <button class="add-btn">Add</button>
+          </div>
+        </div>
+        <div class="item-row" data-cat="fruit">
+          <span class="item-name">Apples <span class="item-unit">/ lb</span></span>
+          <div class="qty-ctrl">
+            <button class="qty-btn minus">−</button>
+            <span class="qty-num">0</span>
+            <button class="qty-btn plus">+</button>
+            <button class="add-btn">Add</button>
+          </div>
+        </div>
+        <div class="item-row" data-cat="fruit">
+          <span class="item-name">Strawberries <span class="item-unit">/ pint</span></span>
+          <div class="qty-ctrl">
+            <button class="qty-btn minus">−</button>
+            <span class="qty-num">0</span>
+            <button class="qty-btn plus">+</button>
+            <button class="add-btn">Add</button>
+          </div>
+        </div>
+        <div class="item-row" data-cat="herb">
+          <span class="item-name">Rosemary <span class="item-unit">/ bunch</span></span>
+          <div class="qty-ctrl">
+            <button class="qty-btn minus">−</button>
+            <span class="qty-num">0</span>
+            <button class="qty-btn plus">+</button>
+            <button class="add-btn">Add</button>
+          </div>
+        </div>
+        <div class="item-row" data-cat="herb">
+          <span class="item-name">Basil <span class="item-unit">/ bunch</span></span>
+          <div class="qty-ctrl">
+            <button class="qty-btn minus">−</button>
+            <span class="qty-num">0</span>
+            <button class="qty-btn plus">+</button>
+            <button class="add-btn">Add</button>
+          </div>
+        </div>
+        <div class="item-row" data-cat="plant">
+          <span class="item-name">Tomato Plant <span class="item-unit">/ each</span></span>
+          <div class="qty-ctrl">
+            <button class="qty-btn minus">−</button>
+            <span class="qty-num">0</span>
+            <button class="qty-btn plus">+</button>
+            <button class="add-btn">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>© 2026 Hacks Homestead · (616) 863-8257</footer>
+</div>
+
+<div class="modal-overlay" id="qtyModalOverlay">
+  <div class="modal-box">
+    <p>Please add a quantity!</p>
+    <button class="modal-ok-btn" id="qtyModalOk">OK</button>
+  </div>
+</div>
+
+<script>
+  // Particles
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  const particles = [];
+  for (let i = 0; i < 55; i++) {
+    particles.push({ x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, r: Math.random()*2+0.5, dx: (Math.random()-0.5)*0.3, dy: (Math.random()-0.5)*0.3, o: Math.random()*0.4+0.1 });
+  }
+  function drawParticles() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(181,231,196,${p.o})`; ctx.fill();
+      p.x+=p.dx; p.y+=p.dy;
+      if(p.x<0||p.x>canvas.width) p.dx*=-1;
+      if(p.y<0||p.y>canvas.height) p.dy*=-1;
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // Call button
+  const callBtn = document.getElementById('callBtn');
+  const toast = document.getElementById('toast');
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  callBtn.addEventListener('click', () => {
+    if (isMobile) {
+      window.location.href = 'tel:6168638257';
+    } else {
+      navigator.clipboard.writeText('(616) 863-8257').then(() => {
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2800);
+      }).catch(() => { prompt('Copy this number:', '(616) 863-8257'); });
+    }
+  });
+
+  // Category tabs
+  const tabs = document.querySelectorAll('.cat-tab');
+  const rows = document.querySelectorAll('.item-row');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const cat = tab.dataset.cat;
+      rows.forEach(row => {
+        row.classList.toggle('hidden', cat !== 'all' && row.dataset.cat !== cat);
+      });
+    });
+  });
+
+  // Item qty + add
+  const orderMap = {};
+
+  rows.forEach(row => {
+    const nameEl = row.querySelector('.item-name');
+    const name = nameEl.childNodes[0].textContent.trim();
+    const unitEl = row.querySelector('.item-unit');
+    const qtyEl = row.querySelector('.qty-num');
+    const addBtn = row.querySelector('.add-btn');
+
+    row.querySelector('.plus').addEventListener('click', () => {
+      qtyEl.textContent = parseInt(qtyEl.textContent) + 1;
+    });
+
+    row.querySelector('.minus').addEventListener('click', () => {
+      qtyEl.textContent = Math.max(0, parseInt(qtyEl.textContent) - 1);
+    });
+
+    addBtn.addEventListener('click', () => {
+      const q = parseInt(qtyEl.textContent);
+      if (q === 0) {
+        document.getElementById('qtyModalOverlay').classList.add('show');
+        return;
+      }
+      const unit = unitEl ? unitEl.textContent.trim() : '';
+      const key = name;
+      orderMap[key] = { qty: q, unit };
+      addBtn.textContent = '✓ Added';
+      addBtn.classList.add('added');
+      qtyEl.textContent = '0';
+      setTimeout(() => { addBtn.textContent = 'Add'; addBtn.classList.remove('added'); }, 1500);
+      updateSummary();
+    });
+  });
+
+  function updateSummary() {
+    const keys = Object.keys(orderMap);
+    const summaryEl = document.getElementById('orderSummary');
+    const listEl = document.getElementById('orderList');
+
+    if (keys.length === 0) {
+      summaryEl.style.display = 'none';
+      listEl.innerHTML = '';
+      return;
+    }
+
+    summaryEl.style.display = 'block';
+    listEl.innerHTML = '';
+
+    keys.forEach(k => {
+      const item = orderMap[k];
+
+      const row = document.createElement('div');
+      row.className = 'order-list-item';
+
+      const text = document.createElement('span');
+      text.textContent = `${item.qty} ${item.unit} ${k}`;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-item-btn';
+      removeBtn.textContent = '✕';
+      removeBtn.title = 'Remove item';
+      removeBtn.addEventListener('click', () => {
+        delete orderMap[k];
+        updateSummary();
+      });
+
+      row.appendChild(text);
+      row.appendChild(removeBtn);
+      listEl.appendChild(row);
+    });
+  }
+
+  function buildOrderText() {
+    const keys = Object.keys(orderMap);
+    if (keys.length === 0) return '';
+    return '\n\nORDER:\n' + keys.map(k => `- ${orderMap[k].qty} ${orderMap[k].unit} ${k}`).join('\n');
+  }
+
+  const sendBtn = document.getElementById('sendBtn');
+  const cooldownError = document.getElementById('cooldownError');
+
+  // 30-minute send cooldown
+  // Key changed from hh_last_submit_time to hh_last_submit_v2 to reset everyone's previous cooldown
+  const COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes
+  const COOLDOWN_KEY = 'hh_last_submit_v2';
+
+  function getRemainingCooldown() {
+    const last = parseInt(localStorage.getItem(COOLDOWN_KEY) || '0', 10);
+    const elapsed = Date.now() - last;
+    return Math.max(0, COOLDOWN_MS - elapsed);
+  }
+
+  function formatRemaining(ms) {
+    const totalMinutes = Math.ceil(ms / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
+  }
+
+  // Quantity warning modal
+  document.getElementById('qtyModalOk').addEventListener('click', () => {
+    document.getElementById('qtyModalOverlay').classList.remove('show');
+  });
+  document.getElementById('qtyModalOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'qtyModalOverlay') {
+      e.target.classList.remove('show');
+    }
+  });
+
+  // Send button
+  document.getElementById('nameField').addEventListener('input', () => {
+    document.getElementById('nameError').classList.remove('show');
+  });
+  document.getElementById('emailField').addEventListener('input', () => {
+    document.getElementById('emailError').classList.remove('show');
+  });
+
+  document.getElementById('sendBtn').addEventListener('click', async () => {
+    // Only show the cooldown message when they actually try to send
+    const remaining = getRemainingCooldown();
+    if (remaining > 0) {
+      cooldownError.textContent = `You can only send one message every 30 minutes. Please try again in ${formatRemaining(remaining)}.`;
+      cooldownError.classList.add('show');
+      return;
+    }
+    cooldownError.classList.remove('show');
+
+    const name = document.getElementById('nameField').value.trim();
+    const email = document.getElementById('emailField').value.trim();
+    const address = document.getElementById('addressField').value.trim();
+    const message = document.getElementById('messageBox').value.trim();
+    const orderKeys = Object.keys(orderMap);
+
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    nameError.classList.remove('show');
+    emailError.classList.remove('show');
+
+    const bannedWords = ['fuck', 'fucker', 'nigger', 'nigga', 'bitch', 'shit', 'retard'];
+    const lowerName = name.toLowerCase();
+    const containsBannedWord = bannedWords.some(word => lowerName.includes(word));
+
+    let hasError = false;
+
+    if (!name || containsBannedWord) {
+      nameError.classList.add('show');
+      hasError = true;
+    }
+    if (!email || !email.toLowerCase().endsWith('@gmail.com')) {
+      emailError.classList.add('show');
+      hasError = true;
+    }
+    if (!address) {
+      alert('Please enter your delivery address.');
+      hasError = true;
+    }
+    if (orderKeys.length === 0 && !message) {
+      alert('Please add at least one item or leave a message.');
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    const successMsg = document.getElementById('successMsg');
+    sendBtn.textContent = 'Sending...';
+    sendBtn.disabled = true;
+
+    const fullMessage =
+      `Name: ${name}\nEmail: ${email}\nAddress: ${address}` +
+      buildOrderText() +
+      (message ? `\n\nNotes: ${message}` : '');
+
+    try {
+      const res = await fetch('https://formspree.io/f/mpqekayd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ name, email, message: fullMessage })
+      });
+
+      if (res.ok) {
+        successMsg.style.display = 'block';
+        document.getElementById('nameField').value = '';
+        document.getElementById('emailField').value = '';
+        document.getElementById('addressField').value = '';
+        document.getElementById('messageBox').value = '';
+        nameError.classList.remove('show');
+        emailError.classList.remove('show');
+        Object.keys(orderMap).forEach(k => delete orderMap[k]);
+        document.querySelectorAll('.qty-num').forEach(el => el.textContent = '0');
+        document.getElementById('orderSummary').style.display = 'none';
+        setTimeout(() => successMsg.style.display = 'none', 5000);
+
+        // Start the 30-minute cooldown
+        localStorage.setItem(COOLDOWN_KEY, Date.now().toString());
+
+        sendBtn.textContent = 'Send Order / Message ✉️';
+        sendBtn.disabled = false;
+        return;
+      } else {
+        alert('Something went wrong. Please try again!');
+      }
+    } catch (err) {
+      alert('Could not send. Check your connection and try again.');
+    }
+
+    sendBtn.textContent = 'Send Order / Message ✉️';
+    sendBtn.disabled = false;
+  });
+
+</script>
+
+</body>
+</html>
