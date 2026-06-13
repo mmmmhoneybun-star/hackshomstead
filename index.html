@@ -471,6 +471,9 @@
       .logo-wrap { gap: 10px; }
       .cat-tab { font-size: 0.75rem; padding: 6px 10px; }
       .item-name { font-size: 0.85rem; }
+      .header-btns { gap: 10px; }
+      .fb-btn { font-size: 0.85rem; padding: 12px 20px; }
+      .call-btn { font-size: 0.85rem; padding: 12px 20px; }
     }
     .unit-toggle {
       background: rgba(255,255,255,0.15);
@@ -491,11 +494,13 @@
       justify-content: center;
       gap: 12px;
       flex-wrap: wrap;
+      width: 100%;
     }
 
     .fb-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       background: linear-gradient(135deg, #1877f2, #0d65d9);
       color: #fff;
@@ -510,10 +515,13 @@
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 4px 20px rgba(24,119,242,0.5);
       white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .fb-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(24,119,242,0.6); }
     .fb-btn:active { transform: scale(0.97); }
+
+
   </style>
 </head>
 <body>
