@@ -554,10 +554,10 @@
 
   <div class="main-cols">
 
-    <!-- LEFT: Contact form -->
+    <!-- LEFT: Order form -->
     <div class="card">
-      <h2>Send Us a Message</h2>
-      <p class="sub">Fill out your info and we'll get back to you soon.</p>
+      <h2>Place Your Order</h2>
+      <p class="sub">Add items from the list, fill out your info, and submit your order.</p>
 
       <label class="field-label">Your First Name</label>
       <div class="field-error" id="nameError">Please enter your real name</div>
@@ -571,17 +571,14 @@
       <div class="field-error" id="addressError">Please enter your delivery address</div>
       <input type="text" id="addressField" placeholder="123 Main St, City, MI" autocomplete="off" />
 
-      <label class="field-label">Extra Notes (optional)</label>
-      <textarea id="messageBox" placeholder="Any special requests or questions..."></textarea>
-
       <div class="order-summary" id="orderSummary">
         <strong>Your order:</strong>
         <div class="order-list" id="orderList"></div>
       </div>
 
-      <button class="send-btn" id="sendBtn">Send Order / Message ✉️</button>
-      <div class="field-error" id="cooldownError">You can only send one message every 30 minutes. Please try again later.</div>
-      <div class="success-msg" id="successMsg">✅ Sent! We'll be in touch soon.</div>
+      <button class="send-btn" id="sendBtn">Place Order 🛒</button>
+      <div class="field-error" id="cooldownError">You can only place one order every 30 minutes. Please try again later.</div>
+      <div class="success-msg" id="successMsg">✅ Order placed! We'll be in touch soon.</div>
     </div>
 
     <!-- RIGHT: Items -->
@@ -858,7 +855,7 @@
     // Only show the cooldown message when they actually try to send
     const remaining = getRemainingCooldown();
     if (remaining > 0) {
-      cooldownError.textContent = `You can only send one message every 30 minutes. Please try again in ${formatRemaining(remaining)}.`;
+      cooldownError.textContent = `You can only place one order every 30 minutes. Please try again in ${formatRemaining(remaining)}.`;
       cooldownError.classList.add('show');
       return;
     }
@@ -867,7 +864,6 @@
     const name = document.getElementById('nameField').value.trim();
     const email = document.getElementById('emailField').value.trim();
     const address = document.getElementById('addressField').value.trim();
-    const message = document.getElementById('messageBox').value.trim();
     const orderKeys = Object.keys(orderMap);
 
     const nameError = document.getElementById('nameError');
@@ -908,8 +904,7 @@
 
     const fullMessage =
       `Name: ${name}\nEmail: ${email}\nAddress: ${address}` +
-      buildOrderText() +
-      (message ? `\n\nNotes: ${message}` : '');
+      buildOrderText();
 
     try {
       const res = await fetch('https://formspree.io/f/mpqekayd', {
@@ -923,7 +918,6 @@
         document.getElementById('nameField').value = '';
         document.getElementById('emailField').value = '';
         document.getElementById('addressField').value = '';
-        document.getElementById('messageBox').value = '';
         nameError.classList.remove('show');
         emailError.classList.remove('show');
         document.getElementById('addressError').classList.remove('show');
@@ -935,7 +929,7 @@
         // Start the 30-minute cooldown
         localStorage.setItem(COOLDOWN_KEY, Date.now().toString());
 
-        sendBtn.textContent = 'Send Order / Message ✉️';
+        sendBtn.textContent = 'Place Order 🛒';
         sendBtn.disabled = false;
         return;
       } else {
@@ -945,7 +939,7 @@
       alert('Could not send. Check your connection and try again.');
     }
 
-    sendBtn.textContent = 'Send Order / Message ✉️';
+    sendBtn.textContent = 'Place Order 🛒';
     sendBtn.disabled = false;
   });
 
